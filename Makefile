@@ -4,7 +4,7 @@
 # Filename     	:   Makefile
 # Version      	:	v1.3.0
 # Created Time 	:	2021-06-25 10:47
-# Last modified	:	2023-03-12 22:47
+# Last modified	:	2023-06-28 08:20
 # By Modified  	: 
 # Description  	:       build go package
 #  
@@ -45,7 +45,7 @@ serve:
 
 .PHONY: build
 build: clean
-	@go build -ldflags $(PKGFLAGS) -o "dist/$(APP_NAME)" 
+	@go build -trimpath -ldflags $(PKGFLAGS) -o "dist/$(APP_NAME)" 
 	@echo "\n******************************"
 	@echo "         build succeed "
 	@echo "******************************\n"
@@ -55,8 +55,8 @@ build: clean
 .PHONY: build-linux
 build-linux: clean
 	@go mod tidy
-	@GOOS="linux"   GOARCH="amd64" go build -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-linux-amd64"       
-	@GOOS="linux"   GOARCH="arm64" go build -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-linux-arm64"    
+	@GOOS="linux"   GOARCH="amd64" go build -trimpath -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-linux-amd64"       
+	@GOOS="linux"   GOARCH="arm64" go build -trimpath -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-linux-arm64"    
 	@echo "\n******************************"
 	@echo "      build linux succeed "
 	@echo "******************************\n"
@@ -66,11 +66,11 @@ build-linux: clean
 .PHONY: release
 release: clean
 	@go mod tidy
-	@GOOS="windows" GOARCH="amd64" go build -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-windows-amd64.exe" 
-	@GOOS="linux"   GOARCH="amd64" go build -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-linux-amd64"       
-	@GOOS="linux"   GOARCH="arm64" go build -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-linux-arm64"       
-	@GOOS="darwin"  GOARCH="amd64" go build -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-darwin-amd64"      
-	@GOOS="darwin"  GOARCH="arm64" go build -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-darwin-arm64"      
+	@GOOS="windows" GOARCH="amd64" go build -trimpath -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-windows-amd64.exe" 
+	@GOOS="linux"   GOARCH="amd64" go build -trimpath -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-linux-amd64"       
+	@GOOS="linux"   GOARCH="arm64" go build -trimpath -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-linux-arm64"       
+	@GOOS="darwin"  GOARCH="amd64" go build -trimpath -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-darwin-amd64"      
+	@GOOS="darwin"  GOARCH="arm64" go build -trimpath -ldflags $(PKGFLAGS) -v -o "dist/$(APP_NAME)-darwin-arm64"      
 	@echo "\n******************************"
 	@echo "        release succeed "
 	@echo "******************************\n"
