@@ -3,13 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/serialt/lancet/cryptor"
 	"github.com/serialt/sugar/v3"
-	"golang.org/x/exp/slog"
 )
 
 func init() {

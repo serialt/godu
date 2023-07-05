@@ -1,12 +1,12 @@
 package main
 
 import (
+	"log/slog"
 	"os"
 	"time"
 
 	"github.com/robfig/cron/v3"
 	"github.com/serialt/lancet/cryptor"
-	"golang.org/x/exp/slog"
 )
 
 func service() {

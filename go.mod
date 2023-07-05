@@ -1,12 +1,12 @@
 module github.com/serialt/cli
 
-go 1.20
+go 1.21
 
 require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/serialt/lancet v0.0.0-20230511153350-d1e1ff0f4fcd
-	github.com/serialt/sugar/v3 v3.0.4
-	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
+	github.com/serialt/sugar/v3 v3.0.5
+
 )
 
 require (
