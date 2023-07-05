@@ -4,7 +4,7 @@
 # Filename     	:   Makefile
 # Version      	:	v1.3.0
 # Created Time 	:	2021-06-25 10:47
-# Last modified	:	2023-06-28 08:20
+# Last modified	:	2023-07-05 19:20
 # By Modified  	: 
 # Description  	:       build go package
 #  
@@ -26,11 +26,11 @@ VERSION = $(BRANCH)
 
 BuildTime := $(shell date -u  '+%Y-%m-%d %H:%M:%S %Z')
 GitHash := $(shell git rev-parse HEAD)
-GoVersion := $(shell go version | awk '{print $3}')
+GoVersion = $(shell go version | cut -d " " -f 3 )
 Maintainer := tserialt@gmail.com 
 KEY := wzFdVviHTKraaPRWEa9bFLLzTkddtUNY
 
-PKGFLAGS := " -s -w -X 'main.APPVersion=$(VERSION)'  -X 'main.BuildTime=$(BuildTime)' -X 'main.GitCommit=$(GitHash)' -X 'main.AesKey=$(KEY)'  "
+PKGFLAGS := " -s -w -X 'main.APPVersion=$(VERSION)' -X 'main.GoVersion=$(GoVersion)'  -X 'main.BuildTime=$(BuildTime)' -X 'main.GitCommit=$(GitHash)' -X 'main.AesKey=$(KEY)'  "
 
 APP_NAME = $(PROJECT_NAME)
 # go-pkg.v0.1.1-linux-amd64

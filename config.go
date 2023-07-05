@@ -5,6 +5,7 @@ var (
 	appVersion bool // 控制是否显示版本
 	APPVersion = "v0.0.2"
 	BuildTime  = "2006-01-02 15:04:05"
+	GoVersion  = "go1.21"
 	GitCommit  = "xxxxxxxxxxx"
 	ConfigFile = "config.yaml"
 	config     *Config

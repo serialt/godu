@@ -28,10 +28,12 @@ func init() {
 }
 func main() {
 	if appVersion {
-		fmt.Printf("APPVersion: %v  BuildTime: %v  GitCommit: %v\n",
+		fmt.Printf("AppVersion: %v\nGo version: %v\nBuild Time: %v\nGit commit: %v\n\n",
 			APPVersion,
+			GoVersion,
 			BuildTime,
-			GitCommit)
+			GitCommit,
+		)
 		return
 	}
 	if len(AesData) > 0 {
