@@ -28,7 +28,7 @@ func init() {
 }
 func main() {
 	if appVersion {
-		fmt.Printf("AppVersion: %v\nGo version: %v\nBuild Time: %v\nGit commit: %v\n\n",
+		fmt.Printf("AppVersion: %v\nGo Version: %v\nBuild Time: %v\nGit Commit: %v\n\n",
 			APPVersion,
 			GoVersion,
 			BuildTime,
