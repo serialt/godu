@@ -1,0 +1,46 @@
+version: "3"
+services:
+  cli:
+    image: "harbor.local.com/serialt:v0.0.1"
+    pull_policy: always  # always, never
+    container_name: cli
+    hostname: cli
+    user: root # dockerfile中如果未设置，则默认root
+    restart: always # always, "no", on-failure, unless-stopped
+    # environment:
+    #   - SHOW=true
+    # shm_size: 1gb  # set shared memory (/dev/shm): 2b, 1024kb 2048k 300m 
+    environment:
+      HELLO: "world"    
+    env_file: .env
+    ports:
+      - "8899:80"
+    volumes:
+      - ${PWD}/config.yaml:/app/config.yaml
+      - /etc/localtime:/etc/localtime:ro
+    # command: bundle exec thin -p 3000
+    # 覆盖容器里的
+    # entrypoint: /code/entrypoint.sh  
+    networks:
+      - app
+    extra_hosts:
+      harbor.local.com: 172.16.16.5
+    dns_search: .
+    dns:
+      - 114.114.114.114
+      - 8.8.8.8
+    sysctls:
+      net.core.somaxconn: 1024
+    healthcheck:
+      test: curl -f https://localhost || exit 1
+      # test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
+    # network_mode: "host"
+    # network_mode: "none"
+networks:
+  app:   
+    external: true 

@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/serialt/lancet/cryptor"
+	"github.com/serialt/crab"
 	"github.com/serialt/sugar/v3"
 )
 
@@ -37,8 +37,10 @@ func main() {
 		return
 	}
 	if len(AesData) > 0 {
-		fmt.Printf("Encrypted string: %v\n", cryptor.AesCbcEncryptBase64(AesData, AesKey))
-		fmt.Printf("Plaintext : %v\n", cryptor.AesCbcDecryptBase64(cryptor.AesCbcEncryptBase64(AesData, AesKey), AesKey))
+		eData, _ := crab.AESEncryptCBCBase64(AesData, AesKey)
+		fmt.Printf("Encrypted string: %v\n", eData)
+		dData, _ := crab.AESDecryptCBCBase64(eData, AesKey)
+		fmt.Printf("Plaintext : %v\n", dData)
 		return
 	}
 	service()

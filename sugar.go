@@ -3,10 +3,8 @@ package main
 import (
 	"log/slog"
 	"os"
-	"time"
 
-	"github.com/robfig/cron/v3"
-	"github.com/serialt/lancet/cryptor"
+	"github.com/serialt/crab"
 )
 
 func service() {
@@ -14,12 +12,6 @@ func service() {
 	slog.Info("info msg")
 	slog.Error("error msg")
 
-	// 定时任务
-	c := cron.New()
-	c.AddFunc("@every 2s", func() {
-		slog.Info("cron job", "output", time.Second)
-	})
-	c.Start()
 }
 
 func EnvGet(envName string, defaultValue string) (data string) {
@@ -33,7 +25,7 @@ func EnvGet(envName string, defaultValue string) (data string) {
 
 func (c *Config) DecryptConfig() {
 	if c.Encrypt {
-		c.Token = cryptor.AesCbcDecryptBase64(c.Token, AesKey)
+		crab.AESDecryptCBCBase64(c.Token, AesKey)
 		slog.Debug(c.Token)
 	}
 }
