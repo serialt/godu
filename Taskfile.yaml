@@ -1,0 +1,68 @@
+version: '3'
+
+vars:
+  PROJECT_NAME: cli
+  BRANCH:
+    sh: git symbolic-ref HEAD 2>/dev/null | cut -d"/" -f 3
+  VERSION: "{{ .BRANCH }}"
+    # 获取最新的tag
+    # sh: git fetch --tags && git tag | sort -V | tail -1
+  APP_NAME: "{{ .PROJECT_NAME }}"
+  GIT_COMMIT:
+    # 短hash
+    # sh: git log -n 1 --format=%h
+    # 长hash
+    sh: git rev-parse HEAD
+  GoVersion:
+    sh: go version | cut -d " " -f 3
+  BuildTime: '{{now | date "Mon Jan 02 15:04:05 SGT 2006"}}'
+  Maintainer: tserialt@gmail.com   
+  PKGFLAGS: " -s -w -X 'main.APPVersion={{ .VERSION }}' -X 'main.GoVersion={{ .GoVersion }}'  -X 'main.BuildTime={{ .BuildTime }}' -X 'main.GitCommit={{ .GIT_COMMIT }}' "
+tasks:
+  clean:
+    cmds:
+      - rm -rf dist/{{ .PROJECT_NAME }}*
+
+  run:
+    cmds:
+      - go run .
+
+  build:
+    cmds:
+      - go build -trimpath -ldflags "{{ .PKGFLAGS }}" -o "dist/{{ .APP_NAME }}" 
+
+  build-linux:
+    vars:
+      OS_TYPE: linux
+    cmds:
+      - GOOS="{{ .OS_TYPE }}"   GOARCH="amd64" go build -trimpath -ldflags "{{ .PKGFLAGS }}" -v -o "dist/{{ .APP_NAME }}-{{ .OS_TYPE }}-amd64" 
+      - GOOS="{{ .OS_TYPE }}"   GOARCH="arm64" go build -trimpath -ldflags "{{ .PKGFLAGS }}" -v -o "dist/{{ .APP_NAME }}-{{ .OS_TYPE }}-arm64"    
+
+  build-mac:
+    vars:
+      OS_TYPE: darwin
+    cmds:
+      - GOOS="{{ .OS_TYPE }}"   GOARCH="amd64" go build -trimpath -ldflags "{{ .PKGFLAGS }}" -v -o "dist/{{ .APP_NAME }}-{{ .OS_TYPE }}-amd64" 
+      - GOOS="{{ .OS_TYPE }}"   GOARCH="arm64" go build -trimpath -ldflags "{{ .PKGFLAGS }}" -v -o "dist/{{ .APP_NAME }}-{{ .OS_TYPE }}-arm64"    
+ 
+  build-win:
+    vars:
+      OS_TYPE: windows
+    cmds:
+      - GOOS="{{ .OS_TYPE }}"  GOARCH="amd64" go build -trimpath -ldflags "{{ .PKGFLAGS }}" -v -o "dist/{{ .APP_NAME }}-{{ .OS_TYPE }}-amd64.exe" 
+
+  release:
+    cmds:
+      - task: build-linux
+      - task: build-mac
+      - task: build-win
+      - task: banner
+  banner:
+    cmds: 
+      - cmd: echo -e "\n******************************\n\n        build succeed \n\n******************************\n" 
+    silent: true
+  default:
+    deps: [clean]
+    cmds:
+      - task: build
+      - task: banner
