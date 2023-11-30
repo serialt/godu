@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  PROJECT_NAME: cli
+  PROJECT_NAME: godu
   BRANCH:
     sh: git symbolic-ref HEAD 2>/dev/null | cut -d"/" -f 3
   VERSION: "{{ .BRANCH }}"

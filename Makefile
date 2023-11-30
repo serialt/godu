@@ -11,7 +11,7 @@
 # ******************************************************
 
 
-PROJECT_NAME= cli
+PROJECT_NAME= godu
 
 
 GOBASE=$(shell pwd)
