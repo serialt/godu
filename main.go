@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"sync"
@@ -12,65 +10,10 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
-var waitGroup sync.WaitGroup
-var ch = make(chan struct{}, 255)
+var wg sync.WaitGroup
 
-func dirents(path string) ([]os.FileInfo, bool) {
-	entries, err := ioutil.ReadDir(path)
-	if err != nil {
-		log.Fatal(err)
-		return nil, false
-	}
-	return entries, true
-}
+func DirSize(path string) {
 
-// 递归计算目录下所有文件
-func walkDir(path string, fileSize chan<- int64) {
-	defer waitGroup.Done()
-	ch <- struct{}{} //限制并发量
-	entries, ok := dirents(path)
-	<-ch
-	if !ok {
-		log.Fatal("can not find this dir path!!")
-		return
-	}
-	for _, e := range entries {
-		if e.IsDir() {
-			waitGroup.Add(1)
-			go walkDir(filepath.Join(path, e.Name()), fileSize)
-		} else {
-			fileSize <- e.Size()
-		}
-	}
-}
-
-func all_file(dir_path string) {
-
-	//文件大小chennel
-	fileSize := make(chan int64)
-	//文件总大小
-	var sizeCount int64
-	//文件数目
-	var fileCount int
-
-	//计算目录下所有文件占的大小总和
-	waitGroup.Add(1)
-	go walkDir(dir_path, fileSize)
-
-	go func() {
-		defer close(fileSize)
-		waitGroup.Wait()
-	}()
-
-	for size := range fileSize {
-		fileCount++
-		sizeCount += size
-	}
-	fsize := humanize.IBytes(uint64(sizeCount))
-	fmt.Printf("%-10s %-8s  %s \n", fsize, fmt.Sprint(fileCount), dir_path)
-	// fmt.Printf("size: %.1fM   file count: %d\n", float64(sizeCount)/1024/1024, fileCount)
-}
-func DirSize(path string) (int64, error) {
 	var size int64
 	err := filepath.Walk(path, func(_ string, info os.FileInfo, err error) error {
 		if !info.IsDir() {
@@ -78,7 +21,14 @@ func DirSize(path string) (int64, error) {
 		}
 		return err
 	})
-	return size, err
+	if err != nil {
+		fmt.Println("read dir err", "err", err)
+	} else {
+		fmt.Printf(" %-3s %-10s %s\n", "d", humanize.IBytes(uint64(size)), path)
+	}
+
+	wg.Done()
+
 }
 
 func main() {
@@ -87,21 +37,24 @@ func main() {
 		os.Exit(5)
 	}
 	t := time.Now()
-	dir_path := os.Args[1]
-	fmt.Printf(" %-3s %-10s %-8s  %s\n", "Type", "Size", "Count", "Path")
-	files, err := ioutil.ReadDir(dir_path)
+	dir := os.Args[1]
+	fmt.Printf("%-4s %-10s %s\n", "Type", "Size", "Path")
+	files, err := os.ReadDir(dir)
 	if err != nil {
-		log.Fatal(err)
-	} else {
-		for _, fi := range files {
-			if fi.IsDir() {
-				fmt.Printf("  %-3s ", "d")
-				all_file(filepath.Join(dir_path, fi.Name()))
-			} else {
-				fsize := humanize.IBytes(uint64(fi.Size()))
-				fmt.Printf("  %-3s %-10s %-8s  %s \n", "f", fsize, "1", fi.Name())
-			}
+		fmt.Println("read dir failed\n", "err", err)
+		os.Exit(5)
+	}
+	for _, fi := range files {
+		if fi.IsDir() {
+
+			wg.Add(1)
+			tmpPath := filepath.Join(dir, fi.Name())
+			go DirSize(tmpPath)
+		} else {
+			finfo, _ := fi.Info()
+			fmt.Printf(" %-3s %-10s %s\n", "f", humanize.IBytes(uint64(finfo.Size())), fi.Name())
 		}
 	}
-	fmt.Println("time: " + time.Since(t).String())
+	wg.Wait()
+	fmt.Println("\ntime: " + time.Since(t).String())
 }

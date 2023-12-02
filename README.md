@@ -4,18 +4,19 @@ rewrite du with go
 ### for use
 ```shell
 [root@Sugar godu]🐳 ./godu ./
- Type Size       Count     Path
-  d   360 KiB    460       .git 
-  f   354 B      1         .gitignore 
-  d   563 B      1         .vscode 
-  f   692 B      1         Dockerfile 
-  f   2.6 KiB    1         Makefile 
-  f   27 B       1         README.md 
-  f   2.1 KiB    1         Taskfile.yaml 
-  d   8.7 MiB    5         dist 
-  f   86 B       1         go.mod 
-  f   177 B      1         go.sum 
-  f   2.5 MiB    1         godu 
-  f   2.2 KiB    1         main.go 
-time: 4.448833ms
+Type Size       Path
+ f   6.0 KiB    .DS_Store
+ f   354 B      .gitignore
+ f   692 B      Dockerfile
+ f   2.6 KiB    Makefile
+ f   569 B      README.md
+ f   2.1 KiB    Taskfile.yaml
+ f   86 B       go.mod
+ f   177 B      go.sum
+ f   1.1 KiB    main.go
+ d   563 B      .vscode
+ d   2.1 MiB    dist
+ d   1.8 MiB    .git
+
+time: 4.464ms
 ```
