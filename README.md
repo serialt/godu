@@ -1,7 +1,7 @@
 ## godu
 rewrite du with go
 
-### for use
+### usage
 ```shell
 [root@Sugar godu]🐳 ./godu ./
 Type Size       Path
